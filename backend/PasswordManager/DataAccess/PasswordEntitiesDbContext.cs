@@ -6,6 +6,7 @@ namespace PasswordManager.DataAccess;
 
 public class PasswordEntitiesDbContext(IConfiguration configuration) : DbContext {
     public DbSet<PasswordEntity> PasswordEntities => Set<PasswordEntity>();
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         optionsBuilder.UseNpgsql(configuration.GetConnectionString("Database"));
     }
