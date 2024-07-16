@@ -10,18 +10,26 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<PasswordEntitiesDbContext>();
 builder.Services.AddTransient<IPasswordEntityRequestValidator<CreatePasswordEntityRequest>, PasswordEntityRequestValidator>();
 builder.Services.AddTransient<IPasswordEntityService, PasswordEntityService>();
+builder.Services.AddCors(options => {
+    options.AddDefaultPolicy(policy => {
+        policy.WithOrigins("http://localhost:5173");
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 await using var dbContext = scope.ServiceProvider.GetRequiredService<PasswordEntitiesDbContext>();
 await dbContext.Database.EnsureCreatedAsync();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseCors();
 app.MapControllers();
 
 app.Run();
