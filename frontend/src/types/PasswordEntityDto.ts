@@ -14,5 +14,5 @@ export interface GetPasswordEntityResponse {
 export interface CreatePasswordEntityRequest {
     name: string;
     password: string;
-    type: string;
+    type: number;
 }

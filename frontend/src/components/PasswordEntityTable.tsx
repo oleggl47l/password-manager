@@ -1,31 +1,34 @@
+// PasswordTable.tsx
 import React, { useEffect, useState } from 'react';
-import { Spinner, Table } from 'react-bootstrap';
+import { Spinner, Table, Button } from 'react-bootstrap';
 import { GetPasswordEntityResponse, PasswordEntityDto } from "../types/PasswordEntityDto.ts";
 import { fetchPasswordEntities } from "../services/passwords_entities.ts";
 import Filters from "./Filters.tsx";
+import CreatePasswordEntityModal from "./CreatePasswordEntityModal.tsx";
 
-const PasswordTable: React.FC = () => {
+const PasswordEntityTable: React.FC = () => {
     const [passwordEntities, setPasswordEntities] = useState<PasswordEntityDto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [sortItem, setSortItem] = useState<string>('createdAt');
     const [sortOrder, setSortOrder] = useState<string>('desc');
+    const [modalShow, setModalShow] = useState<boolean>(false);
 
     useEffect(() => {
-        const loadPasswordEntities = async () => {
-            const data: GetPasswordEntityResponse = await fetchPasswordEntities();
-            if (data) {
-                const entitiesWithVisibility = data.passwordEntityDtos.map(entity => ({
-                    ...entity,
-                    isVisible: false,
-                }));
-                setPasswordEntities(entitiesWithVisibility);
-            }
-            setLoading(false);
-        };
-
         loadPasswordEntities();
     }, []);
+
+    const loadPasswordEntities = async () => {
+        const data: GetPasswordEntityResponse = await fetchPasswordEntities();
+        if (data) {
+            const entitiesWithVisibility = data.passwordEntityDtos.map(entity => ({
+                ...entity,
+                isVisible: false,
+            }));
+            setPasswordEntities(entitiesWithVisibility);
+        }
+        setLoading(false);
+    };
 
     const handleRowClick = (id: string) => {
         setPasswordEntities(prevEntities => {
@@ -75,6 +78,16 @@ const PasswordTable: React.FC = () => {
                 sortOrder={sortOrder}
                 onSortOrderChange={setSortOrder}
             />
+            <div className="text-center mb-3">
+                <Button variant="primary" onClick={() => setModalShow(true)}>
+                    Добавить запись
+                </Button>
+            </div>
+            <CreatePasswordEntityModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                onRefresh={loadPasswordEntities}
+            />
             <Table striped bordered hover>
                 <thead>
                 <tr>
@@ -85,7 +98,7 @@ const PasswordTable: React.FC = () => {
                 </thead>
                 <tbody>
                 {sortedEntities.map((entity) => (
-                    <tr key={entity.id} onClick={() => handleRowClick(entity.id)} style={{ cursor: 'pointer' }}>
+                    <tr key={entity.id} onClick={() => handleRowClick(entity.id)} style={{cursor: 'pointer'}}>
                         <td>{entity.name}</td>
                         <td>{entity.isVisible ? entity.password : '●●●●●●●●'}</td>
                         <td>{new Date(entity.createdAt).toLocaleString()}</td>
@@ -97,4 +110,4 @@ const PasswordTable: React.FC = () => {
     );
 };
 
-export default PasswordTable;
+export default PasswordEntityTable;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form} from 'react-bootstrap';
+import {Col, Form, Row} from 'react-bootstrap';
 
 interface FiltersProps {
     searchTerm: string;
@@ -10,7 +10,7 @@ interface FiltersProps {
     onSortOrderChange: (order: string) => void;
 }
 
-const Filers: React.FC<FiltersProps> = ({
+const Filters: React.FC<FiltersProps> = ({
                                             searchTerm,
                                             onSearchChange,
                                             sortItem,
@@ -19,7 +19,7 @@ const Filers: React.FC<FiltersProps> = ({
                                             onSortOrderChange,
                                         }) => {
     return (
-        <>
+        <div className="mb-3">
             <Form.Control
                 type="text"
                 placeholder="Поиск по наименованию..."
@@ -27,25 +27,29 @@ const Filers: React.FC<FiltersProps> = ({
                 onChange={(e) => onSearchChange(e.target.value)}
                 className="mb-3"
             />
-            <Form.Select
-                value={sortItem}
-                onChange={(e) => onSortChange(e.target.value)}
-                className="mb-3"
-            >
-                <option value="name">Имя</option>
-                <option value="createdAt">Дата</option>
-                <option value="type">Тип</option>
-            </Form.Select>
-            <Form.Select
-                value={sortOrder}
-                onChange={(e) => onSortOrderChange(e.target.value)}
-                className="mb-3"
-            >
-                <option value="asc">По возрастанию</option>
-                <option value="desc">По убыванию</option>
-            </Form.Select>
-        </>
+            <Row className="mb-3">
+                <Col>
+                    <Form.Select
+                        value={sortItem}
+                        onChange={(e) => onSortChange(e.target.value)}
+                    >
+                        <option value="name">Имя</option>
+                        <option value="createdAt">Дата</option>
+                        <option value="type">Тип</option>
+                    </Form.Select>
+                </Col>
+                <Col>
+                    <Form.Select
+                        value={sortOrder}
+                        onChange={(e) => onSortOrderChange(e.target.value)}
+                    >
+                        <option value="asc">По возрастанию</option>
+                        <option value="desc">По убыванию</option>
+                    </Form.Select>
+                </Col>
+            </Row>
+        </div>
     );
 };
 
-export default Filers;
+export default Filters;
