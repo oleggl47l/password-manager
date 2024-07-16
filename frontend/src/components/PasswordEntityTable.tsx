@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {Spinner, Table} from 'react-bootstrap';
-import {GetPasswordEntityResponse, PasswordEntityDto} from "../types/PasswordEntityDto.ts";
-import {fetchPasswordEntities} from "../services/passwords_entities.ts";
+import { Spinner, Table } from 'react-bootstrap';
+import { GetPasswordEntityResponse, PasswordEntityDto } from "../types/PasswordEntityDto.ts";
+import { fetchPasswordEntities } from "../services/passwords_entities.ts";
 import Filters from "./Filters.tsx";
 
 const PasswordTable: React.FC = () => {
@@ -10,7 +10,6 @@ const PasswordTable: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [sortItem, setSortItem] = useState<string>('createdAt');
     const [sortOrder, setSortOrder] = useState<string>('desc');
-
 
     useEffect(() => {
         const loadPasswordEntities = async () => {
@@ -28,13 +27,13 @@ const PasswordTable: React.FC = () => {
         loadPasswordEntities();
     }, []);
 
-    const handleRowClick = (index: number) => {
+    const handleRowClick = (id: string) => {
         setPasswordEntities(prevEntities => {
-            const updatedEntities = [...prevEntities];
-            updatedEntities[index] = {
-                ...updatedEntities[index],
-                isVisible: !updatedEntities[index].isVisible,
-            };
+            const updatedEntities = prevEntities.map(entity =>
+                entity.id === id
+                    ? { ...entity, isVisible: !entity.isVisible }
+                    : entity
+            );
             return updatedEntities;
         });
     };
@@ -85,8 +84,8 @@ const PasswordTable: React.FC = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {sortedEntities.map((entity, index) => (
-                    <tr key={entity.id} onClick={() => handleRowClick(index)} style={{ cursor: 'pointer' }}>
+                {sortedEntities.map((entity) => (
+                    <tr key={entity.id} onClick={() => handleRowClick(entity.id)} style={{ cursor: 'pointer' }}>
                         <td>{entity.name}</td>
                         <td>{entity.isVisible ? entity.password : '●●●●●●●●'}</td>
                         <td>{new Date(entity.createdAt).toLocaleString()}</td>
