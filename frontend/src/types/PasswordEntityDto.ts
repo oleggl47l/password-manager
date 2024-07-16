@@ -4,9 +4,15 @@ export interface PasswordEntityDto {
     password: string;
     createdAt: string;
     type: string;
-    isVisible?: boolean; // Добавлено свойство
+    isVisible?: boolean;
 }
 
 export interface GetPasswordEntityResponse {
     passwordEntityDtos: PasswordEntityDto[];
+}
+
+export interface CreatePasswordEntityRequest {
+    name: string;
+    password: string;
+    type: string;
 }
